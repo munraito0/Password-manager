@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(pip install:*)",
+      "Bash(python -c ':*)",
+      "Bash(python:*)",
+      "Bash(.venv/Scripts/python.exe -c \"import pydantic, email_validator; print\\('pydantic', pydantic.VERSION\\); print\\('email_validator', email_validator.__version__\\)\")",
+      "Bash(.venv/Scripts/python.exe make_report.py)",
+      "Bash(.venv/Scripts/python.exe)",
+      "Bash(rm make_report.py)",
+      "Bash(ls *.py)",
+      "Bash(.venv/Scripts/python.exe -c ' *)",
+      "Bash(.venv/Scripts/python.exe _make_report_tmp.py)",
+      "Bash(rm _make_report_tmp.py)"
+    ]
+  }
+}

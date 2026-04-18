@@ -5,11 +5,11 @@ from app.models.cipher import Cipher
 from app.schemas.cipher import CipherCreate, CipherUpdate
 
 async def get_all(db: AsyncSession):
-    result = await db.execute(select(Cipher).where(Cipher.deleted_at.is_(None)))
+    result = await db.execute(select(Cipher))
     return result.scalars().all()
 
 async def get_by_id(db: AsyncSession, cipher_id: uuid.UUID):
-    result = await db.execute(select(Cipher).where(Cipher.id == cipher_id, Cipher.deleted_at.is_(None)))
+    result = await db.execute(select(Cipher).where(Cipher.id == cipher_id))
     return result.scalar_one_or_none()
 
 async def create(db: AsyncSession, data: CipherCreate):
@@ -35,4 +35,4 @@ async def delete(db: AsyncSession, cipher_id: uuid.UUID):
         return False
     await db.delete(cipher)
     await db.commit()
-    return Trueп
+    return True

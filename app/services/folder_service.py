@@ -14,6 +14,7 @@ async def get_by_id(db: AsyncSession, folder_id: uuid.UUID):
 
 async def create(db: AsyncSession, data: FolderCreate):
     folder = Folder(**data.model_dump())
+
     db.add(folder)
     await db.commit()
     await db.refresh(folder)
