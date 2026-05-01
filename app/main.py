@@ -1,16 +1,26 @@
-from fastapi import FastAPI
 import uvicorn
-from app.routers import users,folders,ciphers,devices,refresh_tokens,cipher_logins,cipher_cards,cipher_identities,cipher_fields,audit_logs,demo
+from fastapi import FastAPI
+
 from app.database import engine, Base
 from app.errors import register_exception_handlers
+from app.middleware import LoggingMiddleware
+from app.routers import (
+    users, folders, ciphers, devices, refresh_tokens,
+    cipher_logins, cipher_cards, cipher_identities,
+    cipher_fields, audit_logs, demo,
+)
 
 app = FastAPI()
+
+app.add_middleware(LoggingMiddleware)
 register_exception_handlers(app)
+
 
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
 
 app.include_router(users.router)
 app.include_router(folders.router)

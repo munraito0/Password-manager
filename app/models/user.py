@@ -11,7 +11,7 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False)
     name = Column(String(255), nullable=False)
     master_password_hash = Column(String(255), nullable=False)
-    master_password_hint = Column(String(255), nullable=False)
+    master_password_hint = Column(String(255), nullable=True)
     kdf_type = Column(Integer, nullable=False)
     kdf_iterations = Column(Integer, nullable=False)
     two_factor_enabled = Column(Boolean, nullable=False, default=False)
