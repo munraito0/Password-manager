@@ -22,6 +22,7 @@ class UserResponse(BaseModel):
     name: str
     two_factor_enabled: bool
     premium: bool
+    role: str
     created_at: datetime
 
     class Config:

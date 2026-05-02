@@ -9,6 +9,7 @@ from app.routers import (
     cipher_logins, cipher_cards, cipher_identities,
     cipher_fields, audit_logs, demo,
 )
+from app.routers import auth
 
 app = FastAPI()
 
@@ -22,6 +23,7 @@ async def startup():
         await conn.run_sync(Base.metadata.create_all)
 
 
+app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(folders.router)
 app.include_router(ciphers.router)

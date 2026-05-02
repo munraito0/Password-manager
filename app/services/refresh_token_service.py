@@ -8,6 +8,10 @@ async def get_all(db: AsyncSession):
     result = await db.execute(select(RefreshToken))
     return result.scalars().all()
 
+async def get_by_hash(db: AsyncSession, token_hash: str):
+    result = await db.execute(select(RefreshToken).where(RefreshToken.token_hash == token_hash))
+    return result.scalar_one_or_none()
+
 async def get_by_id(db: AsyncSession, token_id: uuid.UUID):
     result = await db.execute(select(RefreshToken).where(RefreshToken.id == token_id))
     return result.scalar_one_or_none()

@@ -18,5 +18,6 @@ class User(Base):
     email_verified = Column(Boolean, nullable=False, default=False)
     security_stamp = Column(String(255), nullable=True)
     premium = Column(Boolean, nullable=False, default=False)
+    role = Column(String(10), nullable=False, default="USER")
     created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
