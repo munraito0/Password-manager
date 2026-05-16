@@ -12,6 +12,8 @@ from app.models.user import User
 from app.schemas.auth import RegisterRequest, LoginRequest
 from app.schemas.refresh_token import RefreshTokenCreate
 from app.services import refresh_token_service
+from app.services import login_attempt_service
+from app.services import metrics_service
 
 
 def validate_password(password: str) -> None:
@@ -77,12 +79,25 @@ async def register(db: AsyncSession, data: RegisterRequest) -> dict:
 
 
 async def login(db: AsyncSession, data: LoginRequest) -> dict:
+    if login_attempt_service.is_blocked(data.email):
+        retry_after = login_attempt_service.get_retry_after(data.email)
+        metrics_service.login_attempts_total.labels(result='blocked').inc()
+        raise HTTPException(
+            status_code=429,
+            detail="Account temporarily locked. Try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     result = await db.execute(select(User).where(User.email == data.email))
     user = result.scalar_one_or_none()
 
     if not user or not verify_password(data.password, user.master_password_hash):
+        login_attempt_service.record_failed(data.email)
+        metrics_service.login_attempts_total.labels(result='failed').inc()
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
+    login_attempt_service.reset(data.email)
+    metrics_service.login_attempts_total.labels(result='success').inc()
     user_id = str(user.id)
     access_token = create_access_token(user_id, user.email)
     refresh_token = create_refresh_token(user_id)
